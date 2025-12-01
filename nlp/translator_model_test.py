@@ -2,6 +2,7 @@ import sys
 import torch
 
 import sentence_data
+from sentence_data import UNKNOWN_WORD_ID
 from translator_model import TranslatorModel
 
 dataset = sentence_data.SentenceData("dataset/data_1000.txt")
@@ -22,11 +23,9 @@ for word in sentence:
     word = word.lower()
     id = dataset.english_word_id(word)
     if id is None:
-        sys.stderr.write("Error : Unknown word " + word + "\n")
-        sys.exit()
-    else:
-        id = torch.tensor(id,dtype=torch.long).unsqueeze(-1)
-        sentence_id.append(id)
+        id = dataset.english_word_id("<UNKNOWN>")
+    id = torch.tensor(id,dtype=torch.long).unsqueeze(-1)
+    sentence_id.append(id)
 
 japanese = model(torch.stack(sentence_id))
 for id in japanese:
