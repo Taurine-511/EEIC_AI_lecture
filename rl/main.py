@@ -5,12 +5,12 @@ from print_buffer import PrintBuffer
 
 
 # 環境と agent を用意
-env = gym.make('EasyMaze-v0')
-# env = gym.make('CartPole-v0')
-agent = agents.RandomAgent(env)
+# env = gym.make('EasyMaze-v0')
+env = gym.make('CartPole-v0')
+# agent = agents.RandomAgent(env)
 # agent = agents.RulebaseAgent(env)
 # agent = agents.TableQAgent(env)
-# agent = agents.DQNAgent(env)
+agent = agents.DQNAgent(env)
 
 
 # 描画設定
@@ -24,6 +24,7 @@ supported_render_modes = env.metadata.get('render.modes', [])
 render_mode = 'human' if 'human' in supported_render_modes else 'ansi'
 # 描画バッファの用意
 render_buffer = PrintBuffer()
+times_buffer = {"train": [], "test": []}
 
 # 学習設定
 # 行うepisode 数
@@ -77,9 +78,19 @@ for interact_mode in ['train', 'test']:  # 一周目: train, 二周目: test
         else:
             agent.stop_episode()
         sum_of_all_rewards += sum_of_rewards
+        times_buffer[interact_mode] += [time + 1]
         # 数 episodes に一回、統計情報を表示
         if (i_episode + 1) % every_print_statistics[interact_mode] == 0 or prints_detail[interact_mode]:
             average_rewards = sum_of_all_rewards / (i_episode + 1)
-            print(interact_mode, 'episode:', i_episode + 1, 'T:', '???',
+            average_times = sum(times_buffer[interact_mode]) / (i_episode + 1)
+            print(interact_mode, 'episode:', i_episode + 1, 'T:', average_times,
                   'R:', average_rewards, 'statistics:', agent.get_statistics())
+            if type(agent) is agents.TableQAgent:
+                print(agent.q_table_to_str())
+    
     print(interact_mode, 'finished.')
+
+print(f"Train Average Steps: {sum(times_buffer['train']) / len(times_buffer['train'])}")
+print(f"Test Average Steps: {sum(times_buffer['test']) / len(times_buffer['test'])}")
+print(f"最初の10件の平均ステップ: {sum(times_buffer['train'][:10]) / 10}")
+print(f"最後の10件の平均ステップ: {sum(times_buffer['train'][-10:]) / 10}")

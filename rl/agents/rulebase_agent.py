@@ -35,12 +35,12 @@ class RulebaseAgent(abstract_agent.Agent):
         # action = 0
         # として実行すれば、「action = 0」が迷路において
         # どのような行動に相当するかを見ることができる。
+        x, y = obs.values()
         # ------------
-        # if  # here #  :
-        #     action =  # here #
-        # else:
-        #     action =  # here #
-        raise NotImplementedError()
+        if y < 2:
+            action =  1
+        else:
+            action =  0
         # ------------
         return action
 
