@@ -37,7 +37,11 @@ def main():
 		net = net.to(device)
 
 	# Load the CIFAR-10
-	transform = transforms.Compose([transforms.ToTensor()])
+	normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+	transform = transforms.Compose([
+		transforms.ToTensor(),
+		normalize
+	])
 	testset = MyCifarDataset(root=args.dataset, train=False, transform=transform)
 	testloader = torch.utils.data.DataLoader(testset, batch_size=args.batchsize,
 											 shuffle=False, num_workers=2)

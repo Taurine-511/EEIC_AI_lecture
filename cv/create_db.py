@@ -8,7 +8,11 @@ from PIL import Image
 from network_db import Vgg16, MnistMLP
 from tqdm import tqdm
 
-
+def extract_feature(model, path):
+	transform = transforms.Compose([
+		transforms.ToTensor(),
+	])
+	return model(torch.flatten(torch.flatten(transform(Image.open(path, 'r').convert('RGB'))[0]))).unsqueeze(0)
 
 def createDatabase(paths, gpu):
 	# Create model
@@ -16,13 +20,13 @@ def createDatabase(paths, gpu):
 	model = MnistMLP("result/model_final", 1000, 28*28, 10)
 
 	# Set transformation
-	normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-	data_preprocess = transforms.Compose([
-		# transforms.Resize(256),
-		# transforms.CenterCrop(224),
-		transforms.ToTensor(),
-		# normalize
-	])
+	# normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+	# data_preprocess = transforms.Compose([
+	# 	transforms.Resize(256),
+	# 	transforms.CenterCrop(224),
+	# 	transforms.ToTensor(),
+	# 	normalize
+	# ])
 	
 	# Set model to GPU/CPU
 	device = 'cpu'
@@ -33,7 +37,9 @@ def createDatabase(paths, gpu):
 	# Get features
 	with torch.no_grad():
 		features = torch.cat(
-			[model(torch.flatten(data_preprocess(Image.open(path, 'r').convert('RGB'))[0]).unsqueeze(0).to(device)).to('cpu')
+			# [model(data_preprocess(Image.open(path, 'r').convert('RGB')).unsqueeze(0).to(device)).to('cpu')
+			# 	for path in tqdm(paths)],
+			[extract_feature(model, path).to('cpu')
 				for path in tqdm(paths)],
 			dim = 0
 		)

@@ -109,6 +109,7 @@ class   CifarCNN(nn.Module):
 		self.conv2 = nn.Conv2d(6, 16, 5, stride=1)	# 6 * 14 * 14 -> 16 * 10 * 10
 		#self.pool = nn.MaxPool2d(2, 2)	# 16 * 10 * 10 -> 16 * 5 * 5
 		self.fc = nn.Linear(16 * 5 * 5, n_out)	# 400(=16*5*5) -> n_out
+		self.activation_func = F.silu
 
 	def forward(self, x):
 		"""
@@ -126,8 +127,8 @@ class   CifarCNN(nn.Module):
 			output from the network
 			batchsize * outout_dimension
 		"""
-		h = self.pool(F.relu(self.conv1(x)))
-		h = self.pool(F.relu(self.conv2(h)))
+		h = self.pool(self.activation_func(self.conv1(x)))
+		h = self.pool(self.activation_func(self.conv2(h)))
 		h = h.view(-1, 16 * 5 * 5)
 		y = self.fc(h)
 		return y

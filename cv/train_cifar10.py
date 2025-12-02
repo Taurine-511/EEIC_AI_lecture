@@ -47,11 +47,14 @@ def main():
 
 	# Setup a loss and an optimizer
 	criterion = nn.CrossEntropyLoss()
-	optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+	optimizer = optim.AdamW(net.parameters(), lr=0.001)
 
 	# Load the CIFAR-10
-
-	transform = transforms.Compose([transforms.ToTensor()])
+	normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+	transform = transforms.Compose([
+		transforms.ToTensor(),
+		normalize
+	])
 
 	trainvalset = MyCifarDataset(root=args.dataset, train=True, transform=transform)
 	# Split train/val
