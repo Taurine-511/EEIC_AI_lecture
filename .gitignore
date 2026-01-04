@@ -2,3 +2,9 @@ __pycache__/
 .venv/
 
 *.model
+*.ap
+*.dat
+*.f0
+*.mgc
+
+.DS_Store

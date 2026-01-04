@@ -3,6 +3,8 @@ import pysptk as sptk
 from scipy.io import wavfile
 import os
 from pysptk.synthesis import MLSADF, Synthesizer
+import pyworld as pw
+
 
 fs = 16000
 fftlen = 512
@@ -25,13 +27,23 @@ for i in range(0,len(datalist)):
         src_mgc = np.fromfile(f, dtype="<f8", sep="")
         src_mgc = src_mgc.reshape(len(src_mgc)//dim, dim)
     
-    fs, data = wavfile.read("data/SF/wav/{}.wav".format(datalist[i]))  # 入力音声そのものをもってくる
-    data = data.astype(np.float64)
+    with open("data/SF-TF/f0/{}.f0".format(datalist[i]),"rb") as f:
+        f0 = np.fromfile(f, dtype="<f8", sep="")
+        
+    with open("data/SF/ap/{}.ap".format(datalist[i]),"rb") as f:
+        ap = np.fromfile(f, dtype="<f8", sep="")
+        ap = ap.reshape(len(ap)//(fftlen+1),fftlen+1)
 
+    # 先にピッチ変換する
+    fs, _ = wavfile.read("data/SF/wav/{}.wav".format(datalist[i]))
+    sp = sptk.mc2sp(src_mgc.astype(np.float64), alpha, fftlen*2)
+    owav = pw.synthesize(f0, sp, ap, fs)
+    owav = np.clip(owav, -32768, 32767)
+    data = owav
+
+    # その後、差分スペクトル法を適用
     diff_mgc = conv_mgc - src_mgc  # 差分のフィルタを用意する
     diff_mgc = np.zeros(shape=conv_mgc.shape)
-
-    # 差分のフィルタを入力音声波形に適用する
     b = np.apply_along_axis(sptk.mc2b, 1, diff_mgc, alpha)
     synthesizer = Synthesizer(MLSADF(order=dim-1, alpha=alpha), 80)
     owav = synthesizer.synthesis(data, b)
