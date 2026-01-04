@@ -30,49 +30,37 @@ env.step(action)
 ### 演習 3.4.3 train, test のそれぞれで 100 episodes の実験を行って,ランダムエージェントがゴールするまでの episode ごとの平均 step 数を出力せよ.main.py の編集が必要となる.300 steps 掛かってもゴールできない場合,300 steps でゴールしたものとして平均を計算せよ.
 
 ```bash
-test episode: 99 T: 48 R: 0.0 statistics: []
-------
-######
-#S...#
-#..#.#
-#..AG#
-######
-
-test episode: 99 T: 49 R: 10.0 statistics: []
-Episode finished.
-test episode: 100 T: 51.16 R: 10.0 statistics: []
-test finished
+Train Average Steps: 50.93
+Test Average Steps: 52.83
+最初の10件の平均ステップ: 52.8
+最後の10件の平均ステップ: 75.3
 ```
 
 ### 演習 3.4.4 コメントを参考に,穴あきファイル rulebase_agent.py の穴を埋めることで,この形状の迷路を最短 step 数で解くルールベースエージェントを作成せよ.「壁にぶつかるまで下に行き,ぶつかったら右に行く」ように実装すればよい.エージェントが受け取る観測を,print() 関数を用いたり easymaze_env.py を読んだりすることで確認することが必要となることに注意せよ.
 
 ステージは固定なので、下に2回進んでから、右に3回進めば良い
 ```bash
-test episode: 100 T: 5.0 R: 10.0 statistics: []
-test finished.
+Train Average Steps: 5.00
+Test Average Steps: 5.00
+最初の10件の平均ステップ: 5.0
+最後の10件の平均ステップ: 5.0
 ```
 
 ### 演習 3.4.5 easymaze_env.py を編集し,迷路に最小限の変更を行うことで,演習 3.4.4 で作成したエージェントがゴールできないような環境にせよ.ただし,別のルートでゴールできるようにしておくこと.
 ```bash
-test episode: 99 T: 298 R: 0.0 statistics: []
-------
-######
-#S...#
-#A.#.#
-##..G#
-######
-
-test episode: 99 T: 299 R: 0.0 statistics: []
-299 steps have past, but the agent could not reach the goal.
-test episode: 100 T: 300.0 R: 0.0 statistics: []
-test finished.
+Train Average Steps: 300.0
+Test Average Steps: 300.0
+最初の10件の平均ステップ: 300.0
+最後の10件の平均ステップ: 300.0
 ```
 
 ### 演習 3.4.6 コメントを参考に,穴あきファイル table_q_agent.py の穴を埋めることで,table-Q エージェントを実装せよ.ルールベースエージェントの代わりに table-Q エージェントを用いるために,main.py も変更する必要があることに注意せよ.
 ### 演習 3.4.7 演習 3.4.3 と同様に,100 episodes の実験を行って,table-Q エージェントがゴールするまでの平均 step 数を出力せよ.また,train のうち,最初の 10 episodes,最後の 10 episodesの平均 step 数を出力せよ.
 ```bash
-最初の10件の平均ステップ: 19.2
-最後の10件の平均ステップ: 7.3
+Train Average Steps: 7.77
+Test Average Steps: 5.0
+最初の10件の平均ステップ: 15.5
+最後の10件の平均ステップ: 8.1
 ```
 
 ### 演習 3.4.8 table-Q エージェントには,迷路の各地点における Q 値を文字列形式で出力するq_table_to_str() メソッドが用意されている.このメソッドを適宜呼び出し print() することで,Q 値が学習されていく過程を観察せよ.時間があれば,割引率や学習率,迷路の報酬などを変えて,学習の過程がどのように変わるかを観察してみよ.
@@ -149,8 +137,5 @@ Test Average Steps: 128.66
 最初の10件の平均ステップ: 10.6
 最後の10件の平均ステップ: 118.4
 ```
-
-### 発展課題・アイディア
-未着手
 
 
